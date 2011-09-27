@@ -1,0 +1,545 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<!DOCTYPE xep SYSTEM 'xep.dtd' [
+  <!ENTITY % ents SYSTEM 'xep.ent'>
+%ents;
+]>
+<?xml-stylesheet type='text/xsl' href='xep.xsl'?>
+<xep>
+<header>
+  <title>Community Infrastructure</title>
+  <abstract>This specification defines an XMPP protocol extension for generic community communication functionality. The protocol enables XMPP entities to create and manage groups of entities, named communities, and perform Publish-Subscribe based group communication operations. TODO</abstract>
+  <legal>
+    <copyright>This XMPP Extension Protocol is copyright (c) 1999 - 2010 by the XMPP Standards Foundation (XSF).</copyright>
+    <permissions>Permission is hereby granted, free of charge, to any person obtaining a copy of this specification (the &quot;Specification&quot;), to make use of the Specification without restriction, including without limitation the rights to implement the Specification in a software program, deploy the Specification in a network service, and copy, modify, merge, publish, translate, distribute, sublicense, or sell copies of the Specification, and to permit persons to whom the Specification is furnished to do so, subject to the condition that the foregoing copyright notice and this permission notice shall be included in all copies or substantial portions of the Specification. Unless separate permission is granted, modified works that are redistributed shall not contain misleading information regarding the authors, title, number, or publisher of the Specification, and shall not claim endorsement of the modified works by the authors, any organization or project to which the authors belong, or the XMPP Standards Foundation.</permissions>
+    <warranty>## NOTE WELL: This Specification is provided on an &quot;AS IS&quot; BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, express or implied, including, without limitation, any warranties or conditions of TITLE, NON-INFRINGEMENT, MERCHANTABILITY, or FITNESS FOR A PARTICULAR PURPOSE. In no event shall the XMPP Standards Foundation or the authors of this Specification be liable for any claim, damages, or other liability, whether in an action of contract, tort, or otherwise, arising from, out of, or in connection with the Specification or the implementation, deployment, or other use of the Specification. ##</warranty>
+    <liability>In no event and under no legal theory, whether in tort (including negligence), contract, or otherwise, unless required by applicable law (such as deliberate and grossly negligent acts) or agreed to in writing, shall the XMPP Standards Foundation or any author of this Specification be liable for damages, including any direct, indirect, special, incidental, or consequential damages of any character arising out of the use or inability to use the Specification (including but not limited to damages for loss of goodwill, work stoppage, computer failure or malfunction, or any and all other commercial damages or losses), even if the XMPP Standards Foundation or such author has been advised of the possibility of such damages.</liability>
+    <conformance>This XMPP Extension Protocol has been contributed in full conformance with the XSF's Intellectual Property Rights Policy (a copy of which may be found at &lt;<link url='http://www.xmpp.org/extensions/ipr-policy.shtml'>http://www.xmpp.org/extensions/ipr-policy.shtml</link>&gt; or obtained by writing to XSF, P.O. Box 1641, Denver, CO 80201 USA).</conformance>
+  </legal>
+  <number>SOC1</number>
+  <status>ProtoXEP</status>
+  <type>SOCIETIES Extension</type>
+  <sig>Standards</sig>
+  <approver></approver>
+  <dependencies>
+    <spec>XMPP Core</spec>
+    <spec>XEP-0001</spec>
+    <spec>XEP-0004</spec>
+    <spec>XEP-0030</spec>
+    <spec>XEP-0054</spec>
+    <spec>XEP-0060</spec>
+    <spec>XEP-0077</spec>
+    <spec>XEP-0114</spec>
+    <spec>XEP-0144</spec>
+    <spec>XEP-0291</spec>
+  </dependencies>
+  <supersedes/>
+  <supersededby/>
+  <shortname>NOT_YET_ASSIGNED</shortname>
+  <author>
+    <firstname>Jo&#227;o M.</firstname>
+    <surname>Gon&#231;alves</surname>
+    <email></email>
+    <jid></jid>
+  </author>
+  <revision>
+    <version>0.0.1</version>
+    <date>2011-09-26</date>
+    <initials>jmg</initials>
+    <remark><p>First draft.</p></remark>
+  </revision>
+</header>
+<section1 topic='Introduction' anchor='intro'>
+  <p>This section describes the community manager and the community components. TODO</p>
+</section1>
+<section1 topic='Requirements' anchor='reqs'>
+  <p>TODO</p>
+</section1>
+<section1 topic='Glossary' anchor='glossary'>
+  <p>TODO</p>
+</section1>
+<section1 topic='Preliminaries' anchor='preliminaries'>
+  <p>TODO</p>
+  <section2 topic='Default Structure' anchor='structure'>
+  <p>This section describes the default Publish-Subscribe node structure of a community. TODO</p>
+  </section2>
+  <section2 topic='Participant Roles' anchor='roles'>
+  <p>This section describes the default roles of a community, and how the roles are used. TODO</p>
+  </section2>
+  <section2 topic='Node Semantics' anchor='semantics'>
+  <p>This section describes the basic semantics and extension methods associated with information published in a community's Publish-Subscribe nodes. TODO</p>
+  </section2>
+  <section2 topic='Addressing' anchor='addressing'>
+  <p>TODO</p>
+  </section2>
+</section1>
+<section1 topic='Entity Use Cases' anchor='entity'>
+  <p>This section defines the use cases for and protocols to be used by any entity that wishes to interact with a community manager service, mainly focused on Service Discovery use cases.</p>
+  	<section2 topic='Discover Community Managers' anchor='entity-managers'>
+	<p>A community manager service MUST respond to service discovery information requests qualified by the 'http://jabber.org/protocol/disco#info' namespace. The "disco#info" result returned by a community manager service MUST indicate the identity of the service and indicate which features are supported.</p>
+	<example caption="Entity queries community manager service regarding supported features"><![CDATA[
+<iq type='get'
+    from='juliet@capulet.com/balcony'
+    to='commutitizer.capulet.com'
+    id='query1'>
+  <query xmlns='http://jabber.org/protocol/disco#info'/>
+</iq>
+	]]></example>
+	<example caption="Community manager service returns the set of supported features"><![CDATA[
+<iq type='get'
+    from='commutitizer.capulet.com'
+    to='juliet@capulet.com/balcony'
+    id='query2'>
+  <query xmlns='http://jabber.org/protocol/disco#info'>
+    <identity category='community-manager' type='service'/>
+    <feature var='http://socialblend.org/manager'/>
+  </query>
+</iq>
+	]]></example>
+	</section2>
+	<section2 topic='Discover Communities' anchor='entity-communities'>
+	<p>A community manager service MUST respond to service discovery information requests qualified by the 'http://jabber.org/protocol/disco#items' namespace. The "disco#items" result returned by a community manager service MUST indicate the communities managed by that service.</p>
+	<example caption="Entity queries community manager service regarding managed communities"><![CDATA[
+<iq type='get'
+    from='juliet@capulet.com/balcony'
+    to='commutitizer.capulet.com'
+    id='query1'>
+  <query xmlns='http://jabber.org/protocol/disco#items'/>
+</iq>
+	]]></example>
+	<example caption="Community manager service returns the set of managed communities"><![CDATA[
+<iq type='get'
+    from='commutitizer.capulet.com'
+    to='juliet@capulet.com/balcony'
+    id='query2'>
+  <query xmlns='http://jabber.org/protocol/disco#items'>
+    <item jid='family.capulet.com'/>
+    <item jid='elders.capulet.com'/>
+  </query>
+</iq>
+	]]></example>
+	</section2>
+	<section2 topic='Discover Community Metadata' anchor='entity-metadata'>
+	<p>A community service MUST respond to service discovery information requests qualified by the 'http://jabber.org/protocol/disco#info' namespace. The "disco#info" result returned by a community service MUST indicate the identity of the service and indicate which features are supported.</p>
+	<example caption="Entity queries community service regarding community meadata"><![CDATA[
+<iq type='get'
+    from='juliet@capulet.com/balcony'
+    to='family.capulet.com'
+    id='query1'>
+  <query xmlns='http://jabber.org/protocol/disco#info'/>
+</iq>
+	]]></example>
+	<example caption="Community service returns the set of supported features"><![CDATA[
+<iq type='get'
+    from='family.capulet.com'
+    to='juliet@capulet.com/balcony'
+    id='query2'>
+  <query xmlns='http://jabber.org/protocol/disco#info'>
+    <identity category='community' type='service'/>
+    <feature var='http://socialblend.org/community'/>
+    <feature var='http://jabber.org/protocol/pubsub'/>
+  </query>
+</iq>
+	]]></example>
+	</section2>
+</section1>
+<section1 topic='Participant Use Cases' anchor='participant'>
+  <p>This section defines the use cases for and protocols to be used by potential and actual participants of a community.</p>
+  	<section2 topic='Join a Community' anchor='participant-join'>
+	<p>An entity attempts to join a community.</p>
+		<section3 topic='Request' anchor='participant-join-request'>
+		<p>To join a community, the entity sends a join request that community.</p>
+		<example caption="Entity joins community"><![CDATA[
+<iq type='set'
+    from='juliet@capulet.com/balcony'
+    to='family.capulet.com'
+    id='join1'>
+  <community xmlns='http://socialblend.org/community'>
+    <join/>
+  </community>
+</iq>
+		]]></example>
+		</section3>
+		<section3 topic='Success Case' anchor='participant-join-success'>
+		<p>The community service responds to the entity saying that it now belongs to the community.</p>
+		<example caption="Community replies with success"><![CDATA[
+<iq type='result'
+    from='family.capulet.com'
+    to='juliet@capulet.com/balcony'
+    id='join2'>
+  <community xmlns='http://socialblend.org/community'>
+    <join/>
+  </community>
+</iq>
+		]]></example>
+		</section3>
+		<section3 topic='Error Cases' anchor='participant-join-error'>
+		<p>There are several reasons why the join request might fail:</p>
+		<ul>
+			<li>the requesting entity does not have permissions to join the community, based on the community configuration</li>
+			<li>TODO</li>
+		</ul>
+		</section3>
+		<section3 topic='Approval Required' anchor='participant-join-approval'>
+		<p>For communities with an access model of "authorize", join requests MUST be approved by one of the community leaders; therefore the community service sends a message to the leader(s) requesting authorization (see the Manage Participation Requests section of this document). Because the subscription request may or may not be approved, the community MUST return a pending notification to the participant. TODO</p>
+		</section3>
+		<section3 topic='Configuration Required' anchor='participant-join-configuration'>
+		<p>If the entity must configure its participation options (see the Configure Participation Options section of this document) before joining the community, the community MUST so inform the entity. It SHOULD do so by returning an IQ-result to the requesting entity with a notation that configuration of participation options is required. TODO</p>
+		</section3>
+	</section2>
+	<section2 topic='Leave a Community' anchor='participant-leave'>
+	<p>An entity attempts to leave a community.</p>
+		<section3 topic='Request' anchor='participant-leave-request'>
+		<p>To leave a community the entity must send the following request.</p>
+		<example caption="Entity leaves community"><![CDATA[
+<iq type='set'
+    from='juliet@capulet.com/balcony'
+    to='family.capulet.com'
+    id='leave1'>
+  <community xmlns='http://socialblend.org/community'>
+    <leave/>
+  </community>
+</iq>
+		]]></example>
+		</section3>
+		<section3 topic='Success Case' anchor='participant-leave-success'>
+		<p>If the leave request is successfully processed, the server MUST inform the requesting entity that it is no longer in the community. For correctly processing the leave request, the community must:</p>
+		<ul>
+			<li>unsubscribe to whatever Publish-Subscribe nodes belonging to that user that it had subscribed;</li>
+			<li>unsubscribe the user from all the community Publish-Subscribe nodes the user had subscribed to.</li>
+		</ul>
+		<example caption="Community replies with success"><![CDATA[
+<iq type='result'
+    from='family.capulet.com'
+    to='juliet@capulet.com/balcony'
+    id='leave2'>
+  <community xmlns='http://socialblend.org/community'>
+    <leave/>
+  </community>
+</iq>
+		]]></example>
+		</section3>
+		<section3 topic='Error Cases' anchor='participant-leave-error'>
+		<p>There are several reasons why the leave request might fail: TODO</p>
+		</section3>
+		<section3 topic='Leave Notification' anchor='participant-leave-notification'>
+		<p>Users may be forced to leave a community for a number of reasons. In case that happens, they shall receive a leave notification. TODO relation with acceptance??</p>
+		<example caption="Community notifies an entity that it is no longer part of the community."><![CDATA[
+<message from='family.capulet.com'
+    to='romeo@montague.net/garden'
+    id='leave1'>
+  <body>You are not worthy of being a part of this family!</body>
+  <community xmlns='http://socialblend.org/community'>
+    <leave/>
+  </community>
+</message>
+		]]></example>
+		</section3>
+	</section2>
+	<section2 topic='Invite Participant to a Community' anchor='participant-invite'>
+	<p>An entity may choose to invite another entity to join a community.</p>
+	<example caption="Entity invites another entity to join a community"><![CDATA[
+<message from='juliet@capulet.com/balcony'
+    to='romeo@montague.net/garden'
+    id='invite1'>
+  <body>Marry me, Romeo!</body>
+  <community xmlns='http://socialblend.org/community'>
+    <invite jid='family.capulet.com'/>
+  </community>
+</message>
+	]]></example>
+	</section2>
+	<section2 topic='Configure Participation Options' anchor='participant-configure'>
+	<p>A community MAY allow participants to configure their options. Implementations SHOULD use the Data Forms protocol to accomplish this configuration. The options SHOULD the mapping between his personal Publish-Subscribe nodes and the ones from the community.</p>
+		<section3 topic='Advertising Support' anchor='participant-configure-advertise'>
+		<p>If a community supports participation option configuration it MUST advertise that fact in its response to a "disco#info" query by including a feature whose 'var' attribute is "community#participation-options".</p>
+		</section3>
+		<section3 topic='Request' anchor='participant-configure-request'>
+		<p>TODO</p>
+		</section3>
+		<section3 topic='Success Case' anchor='participant-configure-success'>
+		<p>TODO</p>
+		</section3>
+		<section3 topic='Error Cases' anchor='participant-configure-error'>
+		<p>TODO</p>
+		</section3>
+		<section3 topic='Form Submission' anchor='participant-configure-submission'>
+		<p>TODO</p>
+		</section3>
+		<section3 topic='Form Processing' anchor='participant-configure-processing'>
+		<p>TODO</p>
+		</section3>
+		<section3 topic='Join and Configure' anchor='participant-join-configure'>
+		<p>TODO</p>
+		</section3>
+	</section2>
+	<section2 topic='Request Default Participation Configuration Options' anchor='participation-default'>
+	<p>An entity might want to request information about the default participation configuration. Support for this feature is OPTIONAL.</p>
+		<section3 topic='Request' anchor='participation-default-request'>
+		<p>TODO</p>
+		</section3>
+		<section3 topic='Success Case' anchor='participation-default-success'>
+		<p>TODO</p>
+		</section3>
+		<section3 topic='Error Cases' anchor='participation-default-error'>
+		<p>TODO</p>
+		</section3>
+	</section2>
+	<section2 topic='Retrieve Community Publish-Subscribe Node Structure' anchor='participant-retrieve'>
+	<p>An entity may need to request information about the community nodes and the information being published there.</p>
+	<p>To discover the available Publish-Subscribe nodes and their metadata in a community the entity MUST do as described in PUBSUB TODO</p>
+	<p>The depending on the community configuration, the community MUST return TODO ERROR MESSAGE if the entity resquesting the nodes does not have a specific role in that community.</p>
+	</section2>
+	<section2 topic='Retrieve Community Participant List' anchor='participant-list'>
+	<p>An entity may need to request information about the other community participants.</p>
+		<section3 topic='Request' anchor='participant-list-request'>
+		<p>To get a community participant list the entity must send the following request.</p>
+		<example caption="Entity gets participant list"><![CDATA[
+<iq type='get'
+    from='juliet@capulet.com/balcony'
+    to='family.capulet.com'
+    id='leave1'>
+  <community xmlns='http://socialblend.org/community'>
+    <who/>
+  </community>
+</iq>
+		]]></example>
+		</section3>
+		<section3 topic='Success Case' anchor='participant-list-success'>
+		<p>The community service responds to the entity with the community participant list.</p>
+		<example caption="Community returns partcipant list"><![CDATA[
+<iq type='result'
+    from='juliet@capulet.com/balcony'
+    to='family.capulet.com'
+    id='leave1'>
+  <community xmlns='http://socialblend.org/community'>
+    <who>
+    	<participant jid='juliet@capulet.com' role='leader' />
+    	<participant jid='romeo@montague.net' role='participant' />
+    </who>
+  </community>
+</iq>
+		]]></example>
+		</section3>
+		<section3 topic='Error Cases' anchor='participant-list-error'>
+		<p>There are several reasons why the join request might fail:</p>
+		<ul>
+			<li>the requesting entity does not have permissions to see the participant list, based on it's role on the community and on the community configuration</li>
+			<li>TODO</li>
+		</ul>
+		</section3>
+	</section2>
+ </section1>
+ <section1 topic='Leader Use Cases' anchor='leader'>
+  <p>This section defines the use cases for and protocols to be used by potential and actual leaders of a community.</p>
+  	<section2 topic='Create Community' anchor='leader-create'>
+	<p>An entity may want to create a new community. For that it should send a request to an existing community manager. Community manager service support for this feature ("create-community") is MANDATORY.</p>
+		<section3 topic='Request' anchor='leader-create-request'>
+		<p>To create a community, the entity sends a create request a community manager service.</p>
+		<example caption="Entity creates community"><![CDATA[
+<iq type='set'
+    from='juliet@capulet.com/balcony'
+    to='commutitizer.capulet.com'
+    id='create1'>
+  <community xmlns='http://socialblend.org/manager'>
+    <create/>
+  </community>
+</iq>
+		]]></example>
+		</section3>
+		<section3 topic='Success Case' anchor='leader-create-success'>
+		<p>TODO</p>
+		</section3>
+		<section3 topic='Error Cases' anchor='leader-create-error'>
+		<p>There are several reasons why the create request might fail:</p>
+		<ul>
+			<li>the community manager service does not accept create requests from that entity</li>
+			<li>TODO</li>
+		</ul>
+		</section3>
+		<section3 topic='Configuration Required' anchor='leader-create-configuration'>
+		<p>If the entity must configure its participation options (see the Configure Community Options section of this document) before joining the community, the community MUST so inform the entity. It SHOULD do so by returning an IQ-result to the requesting entity with a notation that configuration of participation options is required. TODO</p>
+		</section3>
+	</section2>
+	<section2 topic='Configure Community Options' anchor='leader-configure'>
+	<p>A community SHOULD allow leaders to configure the community options. Implementations SHOULD use the Data Forms protocol to accomplish this configuration.</p>
+		<section3 topic='Advertising Support' anchor='leader-configure-advertise'>
+		<p>If a community supports options configurations it MUST advertise that fact in its response to a "disco#info" query by including a feature whose 'var' attribute is "community#community-options".</p>
+		</section3>
+		<section3 topic='Request' anchor='leader-configure-request'>
+		<p>TODO</p>
+		</section3>
+		<section3 topic='Success Case' anchor='leader-configure-success'>
+		<p>TODO</p>
+		</section3>
+		<section3 topic='Error Cases' anchor='leader-configure-error'>
+		<p>TODO</p>
+		</section3>
+		<section3 topic='Form Submission' anchor='leader-configure-submission'>
+		<p>TODO</p>
+		</section3>
+		<section3 topic='Form Processing' anchor='leader-configure-processing'>
+		<p>TODO</p>
+		</section3>
+		<section3 topic='Create and Configure' anchor='leader-create-configure'>
+		<p>TODO</p>
+		</section3>
+	</section2>
+	<section2 topic='Request Default Community Configuration Options' anchor='community-default'>
+	<p>An entity might want to request information about the default community configuration to a community manager. Support for this feature is OPTIONAL.</p>
+		<section3 topic='Request' anchor='community-default-request'>
+		<p>TODO</p>
+		</section3>
+		<section3 topic='Success Case' anchor='community-default-success'>
+		<p>TODO</p>
+		</section3>
+		<section3 topic='Error Cases' anchor='community-default-error'>
+		<p>TODO</p>
+			<section4 topic='Community Configuration Not Supported' anchor='community-default-error-community'>
+			<p>TODO</p>
+			</section4>
+			<section4 topic='Default Community Configuration Retrieval Not Supported' anchor='community-default-error-default'>
+			<p>TODO</p>
+			</section4>
+		</section3>
+	</section2>
+	<section2 topic='Delete a Community' anchor='leader-delete'>
+	<p>If a community manager service supports community creation, it MUST support community deletion. When a community is deleted all associated Publish-Subscribe nodes MUST also be deleted, as specified in TODO.</p>
+		<section3 topic='Request' anchor='leader-delete-request'>
+		<p>To delete a community, the entity sends a delete request the community manager service that created that community.</p>
+		<example caption="Entity deletes a community"><![CDATA[
+<iq type='set'
+    from='juliet@capulet.com/balcony'
+    to='commutitizer.capulet.com'
+    id='delete1'>
+  <community xmlns='http://socialblend.org/manager'>
+    <delete jid='family.capulet.com'/>
+  </community>
+</iq>
+		]]></example>
+		</section3>
+		<section3 topic='Success Case' anchor='leader-delete-success'>
+		<p>If the delete request is successfully processed, the community manager service MUST inform the requesting entity that the community no longer exists. For correctly processing the delete request, the community manager service must:</p>
+		<ul>
+			<li>perform the process and deliver a leave notification (TODO) to all elements of that community;</li>
+			<li>release the community jid.</li>
+		</ul>
+		<example caption="Entity creates community"><![CDATA[
+<iq type='result'
+    from='commutitizer.capulet.com'
+    to='juliet@capulet.com/balcony'
+    id='delete2'>
+  <community xmlns='http://socialblend.org/manager'>
+    <delete jid='family.capulet.com'/>
+  </community>
+</iq>
+		]]></example>
+		</section3>
+		<section3 topic='Error Cases' anchor='leader-delete-error'>
+		<p>There are several reasons why the create request might fail:</p>
+		<ul>
+			<li>the requesting entity does not have permissions to delete that community</li>
+			<li>TODO</li>
+		</ul>
+			<section4 topic='Insufficient Privileges' anchor='leader-delete-error-privileges'>
+			<p>TODO</p>
+			</section4>
+		</section3>
+	</section2>
+	<section2 topic='Manage Participation Requests' anchor='leader-partreq'>
+	<p>TODO</p>
+	</section2>
+	<section2 topic='Process Pending Participation Requests' anchor='leader-pending'>
+	<p>TODO</p>
+		<section3 topic='Request' anchor='leader-pending-request'>
+		<p>TODO</p>
+		</section3>
+		<section3 topic='Success Case' anchor='leader-pending-success'>
+		<p>TODO</p>
+		</section3>
+		<section3 topic='Error Cases' anchor='leader-pending-error'>
+		<p>TODO</p>
+			<section4 topic='Insufficient Privileges' anchor='leader-pending-error-privileges'>
+			<p>TODO</p>
+			</section4>
+		</section3>
+	</section2>
+	<section2 topic='Manage Group Participants' anchor='leader-manage'>
+	<p>TODO</p>
+		<section3 topic='Retrieve Participant List' anchor='leader-manage-retrieve'>
+		<p>TODO</p>
+			<section4 topic='Request' anchor='community-manage-retrieve-request'>
+			<p>TODO</p>
+			</section4>
+			<section4 topic='Success Case' anchor='community-manage-retrieve-success'>
+			<p>TODO</p>
+			</section4>
+			<section4 topic='Error Cases' anchor='community-manage-retrieve-error'>
+			<p>TODO</p>
+			</section4>
+		</section3>
+		<section3 topic='Modify a Participant Role' anchor='community-manage-modify'>
+		<p>TODO</p>
+			<section4 topic='Request' anchor='community-manage-modify-request'>
+			<p>TODO</p>
+			</section4>
+			<section4 topic='Success Case' anchor='community-manage-modify-success'>
+			<p>TODO</p>
+			</section4>
+			<section4 topic='Error Cases' anchor='community-manage-modify-error'>
+			<p>TODO</p>
+			</section4>
+			<section4 topic='Multiple Simultaneous Modifications' anchor='community-manage-modify-simultaneous'>
+			<p>TODO</p>
+			</section4>
+		</section3>
+		<section3 topic='Remove a Participant' anchor='community-manage-remove'>
+		<p>TODO</p>
+			<section4 topic='Request' anchor='community-manage-remove-request'>
+			<p>TODO</p>
+			</section4>
+			<section4 topic='Success Case' anchor='community-manage-remove-success'>
+			<p>TODO</p>
+			</section4>
+			<section4 topic='Error Cases' anchor='community-manage-remove-error'>
+			<p>TODO</p>
+			</section4>
+		</section3>
+		<section3 topic='Notifying Participants' anchor='community-manage-notify'>
+		<p>TODO</p>
+			<section4 topic='Request' anchor='community-manage-notify-request'>
+			<p>TODO</p>
+			</section4>
+			<section4 topic='Success Case' anchor='community-manage-notify-success'>
+			<p>TODO</p>
+			</section4>
+			<section4 topic='Error Cases' anchor='community-manage-notify-error'>
+			<p>TODO</p>
+			</section4>
+		</section3>
+	</section2>
+</section1>
+<section1 topic='Business Rules' anchor='rules'>
+  <p>TODO</p>
+</section1>
+<section1 topic='Implementation Notes' anchor='impl'>
+  <p>TODO</p>
+</section1>
+<section1 topic='Accessibility Considerations' anchor='access'>
+  <p>TODO</p>
+</section1>
+<section1 topic='Internationalization Considerations' anchor='i18n'>
+  <p>TODO</p>
+</section1>
+<section1 topic='Security Considerations' anchor='security'>
+  <p>TODO</p>
+</section1>
+<section1 topic='IANA Considerations' anchor='iana'>
+  <p>TODO</p>
+</section1>
+<section1 topic='XMPP Registrar Considerations' anchor='registrar'>
+  <p>TODO</p>
+</section1>
+<section1 topic='XML Schema' anchor='schema'>
+  <p>TODO</p>
+</section1>
+</xep>

@@ -1,0 +1,39 @@
+BODY {
+    background-color: #ffffff;
+    color: #000000;
+    font-family: Verdana, Arial, Helvetica, Geneva, sans-serif;
+    font-size: small;
+    line-height: 130%;
+    margin-left: 7%;
+    margin-right: 7%;
+    }
+#left {
+    border: 0px;
+    border-color: #aaaaaa;
+    border-right: 1px;
+    border-style: solid;
+    float: left;
+    margin: 0% 0% 5% 0%;
+    padding: 4px 2% 10px 2%;
+    width: 12%;
+    }
+#main {
+    border: 0px;
+    color: #000000;
+    font-weight: normal; 
+    margin: 0% 0% 5% 17%;
+    padding: 4px 2% 10px 2%;
+    text-decoration: none;
+    }
+#foot {
+    border-top: 0px solid;
+    clear: both;
+    color: #666666;
+    font-size: x-small;
+    font-weight: normal; 
+    text-align: center;
+    text-decoration: none;
+    }
+A:link {
+    color: #336699;
+    }

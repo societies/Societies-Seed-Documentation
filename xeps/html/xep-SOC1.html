@@ -1,0 +1,602 @@
+<?xml version="1.0"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><title>XEP-SOC1: Community Infrastructure</title><link rel="stylesheet" type="text/css" href="../xmpp.css" /><link href="../prettify.css" type="text/css" rel="stylesheet" /><link rel="shortcut icon" type="image/x-icon" href="/favicon.ico" /><script type="text/javascript" src="../prettify.js"></script><meta name="DC.Title" content="Community Infrastructure" /><meta name="DC.Creator" content="Jo&#xE3;o M. Gon&#xE7;alves" /><meta name="DC.Description" content="This specification defines an XMPP protocol extension for generic community communication functionality. The protocol enables XMPP entities to create and manage groups of entities, named communities, and perform Publish-Subscribe based group communication operations. TODO" /><meta name="DC.Publisher" content="XMPP Standards Foundation" /><meta name="DC.Contributor" content="XMPP Extensions Editor" /><meta name="DC.Date" content="2011-09-26" /><meta name="DC.Type" content="XMPP Extension Protocol" /><meta name="DC.Format" content="XHTML" /><meta name="DC.Identifier" content="XEP-SOC1" /><meta name="DC.Language" content="en" /><meta name="DC.Rights" content="This XMPP Extension Protocol is copyright (c) 1999 - 2010 by the XMPP Standards Foundation (XSF)." /></head><body onload="prettyPrint()"><h1>XEP-SOC1: Community Infrastructure</h1><table><tr valign="top"><td><strong>Abstract:</strong></td><td>This specification defines an XMPP protocol extension for generic community communication functionality. The protocol enables XMPP entities to create and manage groups of entities, named communities, and perform Publish-Subscribe based group communication operations. TODO</td></tr><tr valign="top"><td><strong>Author:</strong></td><td>João M. Gonçalves</td></tr><tr valign="top"><td><strong>Copyright:</strong></td><td>© 1999 - 2011 XMPP Standards Foundation. <a href="#appendix-legal">SEE LEGAL NOTICES</a>.</td></tr><tr valign="top"><td><strong>Status:</strong></td><td>ProtoXEP</td></tr><tr valign="top"><td><strong>Type:</strong></td><td>SOCIETIES Extension</td></tr><tr valign="top"><td><strong>Version:</strong></td><td>0.0.1</td></tr><tr valign="top"><td><strong>Last Updated:</strong></td><td>2011-09-26</td></tr></table><hr /><p style="color:red">WARNING: This document has not yet been accepted for consideration or approved in any official manner by the XMPP Standards Foundation, and this document is not yet an XMPP Extension Protocol (XEP). If this document is accepted as a XEP by the XMPP Council, it will be published at &lt;<a href="http://xmpp.org/extensions/">http://xmpp.org/extensions/</a>&gt; and announced on the &lt;standards@xmpp.org&gt; mailing list.</p><hr /><h2>Table of Contents</h2><div class="indent"><p><br />1.  <a href="#intro">Introduction</a><br />2.  <a href="#reqs">Requirements</a><br />3.  <a href="#glossary">Glossary</a><br />4.  <a href="#preliminaries">Preliminaries</a><br />   
+      4.1.  <a href="#structure">Default Structure</a><br />   
+      4.2.  <a href="#roles">Participant Roles</a><br />   
+      4.3.  <a href="#semantics">Node Semantics</a><br />   
+      4.4.  <a href="#addressing">Addressing</a><br />5.  <a href="#entity">Entity Use Cases</a><br />   
+      5.1.  <a href="#entity-managers">Discover Community Managers</a><br />   
+      5.2.  <a href="#entity-communities">Discover Communities</a><br />   
+      5.3.  <a href="#entity-metadata">Discover Community Metadata</a><br />6.  <a href="#participant">Participant Use Cases</a><br />   
+      6.1.  <a href="#participant-join">Join a Community</a><br />      
+      6.1.1.  <a href="#participant-join-request">Request</a><br />      
+      6.1.2.  <a href="#participant-join-success">Success Case</a><br />      
+      6.1.3.  <a href="#participant-join-error">Error Cases</a><br />      
+      6.1.4.  <a href="#participant-join-approval">Approval Required</a><br />      
+      6.1.5.  <a href="#participant-join-configuration">Configuration Required</a><br />   
+      6.2.  <a href="#participant-leave">Leave a Community</a><br />      
+      6.2.1.  <a href="#participant-leave-request">Request</a><br />      
+      6.2.2.  <a href="#participant-leave-success">Success Case</a><br />      
+      6.2.3.  <a href="#participant-leave-error">Error Cases</a><br />      
+      6.2.4.  <a href="#participant-leave-notification">Leave Notification</a><br />   
+      6.3.  <a href="#participant-invite">Invite Participant to a Community</a><br />   
+      6.4.  <a href="#participant-configure">Configure Participation Options</a><br />      
+      6.4.1.  <a href="#participant-configure-advertise">Advertising Support</a><br />      
+      6.4.2.  <a href="#participant-configure-request">Request</a><br />      
+      6.4.3.  <a href="#participant-configure-success">Success Case</a><br />      
+      6.4.4.  <a href="#participant-configure-error">Error Cases</a><br />      
+      6.4.5.  <a href="#participant-configure-submission">Form Submission</a><br />      
+      6.4.6.  <a href="#participant-configure-processing">Form Processing</a><br />      
+      6.4.7.  <a href="#participant-join-configure">Join and Configure</a><br />   
+      6.5.  <a href="#participation-default">Request Default Participation Configuration Options</a><br />      
+      6.5.1.  <a href="#participation-default-request">Request</a><br />      
+      6.5.2.  <a href="#participation-default-success">Success Case</a><br />      
+      6.5.3.  <a href="#participation-default-error">Error Cases</a><br />   
+      6.6.  <a href="#participant-retrieve">Retrieve Community Publish-Subscribe Node Structure</a><br />   
+      6.7.  <a href="#participant-list">Retrieve Community Participant List</a><br />      
+      6.7.1.  <a href="#participant-list-request">Request</a><br />      
+      6.7.2.  <a href="#participant-list-success">Success Case</a><br />      
+      6.7.3.  <a href="#participant-list-error">Error Cases</a><br />7.  <a href="#leader">Leader Use Cases</a><br />   
+      7.1.  <a href="#leader-create">Create Community</a><br />      
+      7.1.1.  <a href="#leader-create-request">Request</a><br />      
+      7.1.2.  <a href="#leader-create-success">Success Case</a><br />      
+      7.1.3.  <a href="#leader-create-error">Error Cases</a><br />      
+      7.1.4.  <a href="#leader-create-configuration">Configuration Required</a><br />   
+      7.2.  <a href="#leader-configure">Configure Community Options</a><br />      
+      7.2.1.  <a href="#leader-configure-advertise">Advertising Support</a><br />      
+      7.2.2.  <a href="#leader-configure-request">Request</a><br />      
+      7.2.3.  <a href="#leader-configure-success">Success Case</a><br />      
+      7.2.4.  <a href="#leader-configure-error">Error Cases</a><br />      
+      7.2.5.  <a href="#leader-configure-submission">Form Submission</a><br />      
+      7.2.6.  <a href="#leader-configure-processing">Form Processing</a><br />      
+      7.2.7.  <a href="#leader-create-configure">Create and Configure</a><br />   
+      7.3.  <a href="#community-default">Request Default Community Configuration Options</a><br />      
+      7.3.1.  <a href="#community-default-request">Request</a><br />      
+      7.3.2.  <a href="#community-default-success">Success Case</a><br />      
+      7.3.3.  <a href="#community-default-error">Error Cases</a><br />        
+      7.3.3.1.  <a href="#community-default-error-community">Community Configuration Not Supported</a><br />        
+      7.3.3.2.  <a href="#community-default-error-default">Default Community Configuration Retrieval Not Supported</a><br />   
+      7.4.  <a href="#leader-delete">Delete a Community</a><br />      
+      7.4.1.  <a href="#leader-delete-request">Request</a><br />      
+      7.4.2.  <a href="#leader-delete-success">Success Case</a><br />      
+      7.4.3.  <a href="#leader-delete-error">Error Cases</a><br />        
+      7.4.3.1.  <a href="#leader-delete-error-privileges">Insufficient Privileges</a><br />   
+      7.5.  <a href="#leader-partreq">Manage Participation Requests</a><br />   
+      7.6.  <a href="#leader-pending">Process Pending Participation Requests</a><br />      
+      7.6.1.  <a href="#leader-pending-request">Request</a><br />      
+      7.6.2.  <a href="#leader-pending-success">Success Case</a><br />      
+      7.6.3.  <a href="#leader-pending-error">Error Cases</a><br />        
+      7.6.3.1.  <a href="#leader-pending-error-privileges">Insufficient Privileges</a><br />   
+      7.7.  <a href="#leader-manage">Manage Group Participants</a><br />      
+      7.7.1.  <a href="#leader-manage-retrieve">Retrieve Participant List</a><br />        
+      7.7.1.1.  <a href="#community-manage-retrieve-request">Request</a><br />        
+      7.7.1.2.  <a href="#community-manage-retrieve-success">Success Case</a><br />        
+      7.7.1.3.  <a href="#community-manage-retrieve-error">Error Cases</a><br />      
+      7.7.2.  <a href="#community-manage-modify">Modify a Participant Role</a><br />        
+      7.7.2.1.  <a href="#community-manage-modify-request">Request</a><br />        
+      7.7.2.2.  <a href="#community-manage-modify-success">Success Case</a><br />        
+      7.7.2.3.  <a href="#community-manage-modify-error">Error Cases</a><br />        
+      7.7.2.4.  <a href="#community-manage-modify-simultaneous">Multiple Simultaneous Modifications</a><br />      
+      7.7.3.  <a href="#community-manage-remove">Remove a Participant</a><br />        
+      7.7.3.1.  <a href="#community-manage-remove-request">Request</a><br />        
+      7.7.3.2.  <a href="#community-manage-remove-success">Success Case</a><br />        
+      7.7.3.3.  <a href="#community-manage-remove-error">Error Cases</a><br />      
+      7.7.4.  <a href="#community-manage-notify">Notifying Participants</a><br />        
+      7.7.4.1.  <a href="#community-manage-notify-request">Request</a><br />        
+      7.7.4.2.  <a href="#community-manage-notify-success">Success Case</a><br />        
+      7.7.4.3.  <a href="#community-manage-notify-error">Error Cases</a><br />8.  <a href="#rules">Business Rules</a><br />9.  <a href="#impl">Implementation Notes</a><br />10.  <a href="#access">Accessibility Considerations</a><br />11.  <a href="#i18n">Internationalization Considerations</a><br />12.  <a href="#security">Security Considerations</a><br />13.  <a href="#iana">IANA Considerations</a><br />14.  <a href="#registrar">XMPP Registrar Considerations</a><br />15.  <a href="#schema">XML Schema</a></p><p><a href="#appendices">Appendices</a><br />    <a href="#appendix-docinfo">A: Document Information</a><br />    <a href="#appendix-authorinfo">B: Author Information</a><br />    <a href="#appendix-legal">C: Legal Notices</a><br />    <a href="#appendix-xmpp">D: Relation to XMPP</a><br />    <a href="#appendix-discuss">E: Discussion Venue</a><br />    <a href="#appendix-conformance">F: Requirements Conformance</a><br />    <a href="#appendix-notes">G: Notes</a><br />    <a href="#appendix-revs">H: Revision History</a></p></div><hr /><h2>1.
+       <a name="intro" id="intro">Introduction</a></h2>
+  <p class="" style="">This section describes the community manager and the community components. TODO</p>
+<h2>2.
+       <a name="reqs" id="reqs">Requirements</a></h2>
+  <p class="" style="">TODO</p>
+<h2>3.
+       <a name="glossary" id="glossary">Glossary</a></h2>
+  <p class="" style="">TODO</p>
+<h2>4.
+       <a name="preliminaries" id="preliminaries">Preliminaries</a></h2>
+  <p class="" style="">TODO</p>
+  <div class="indent"><h3>4.1 <a name="structure" id="structure">Default Structure</a></h3>
+  <p class="" style="">This section describes the default Publish-Subscribe node structure of a community. TODO</p>
+  </div>
+  <div class="indent"><h3>4.2 <a name="roles" id="roles">Participant Roles</a></h3>
+  <p class="" style="">This section describes the default roles of a community, and how the roles are used. TODO</p>
+  </div>
+  <div class="indent"><h3>4.3 <a name="semantics" id="semantics">Node Semantics</a></h3>
+  <p class="" style="">This section describes the basic semantics and extension methods associated with information published in a community's Publish-Subscribe nodes. TODO</p>
+  </div>
+  <div class="indent"><h3>4.4 <a name="addressing" id="addressing">Addressing</a></h3>
+  <p class="" style="">TODO</p>
+  </div>
+<h2>5.
+       <a name="entity" id="entity">Entity Use Cases</a></h2>
+  <p class="" style="">This section defines the use cases for and protocols to be used by any entity that wishes to interact with a community manager service, mainly focused on Service Discovery use cases.</p>
+  	<div class="indent"><h3>5.1 <a name="entity-managers" id="entity-managers">Discover Community Managers</a></h3>
+	<p class="" style="">A community manager service MUST respond to service discovery information requests qualified by the 'http://jabber.org/protocol/disco#info' namespace. The "disco#info" result returned by a community manager service MUST indicate the identity of the service and indicate which features are supported.</p>
+	<p class="caption"><a name="example-1" id="example-1"></a>Example 1. Entity queries community manager service regarding supported features</p><div class="indent"><pre class="prettyprint">
+&lt;iq type='get'
+    from='juliet@capulet.com/balcony'
+    to='commutitizer.capulet.com'
+    id='query1'&gt;
+  &lt;query xmlns='http://jabber.org/protocol/disco#info'/&gt;
+&lt;/iq&gt;
+	</pre></div>
+	<p class="caption"><a name="example-2" id="example-2"></a>Example 2. Community manager service returns the set of supported features</p><div class="indent"><pre class="prettyprint">
+&lt;iq type='get'
+    from='commutitizer.capulet.com'
+    to='juliet@capulet.com/balcony'
+    id='query2'&gt;
+  &lt;query xmlns='http://jabber.org/protocol/disco#info'&gt;
+    &lt;identity category='community-manager' type='service'/&gt;
+    &lt;feature var='http://socialblend.org/manager'/&gt;
+  &lt;/query&gt;
+&lt;/iq&gt;
+	</pre></div>
+	</div>
+	<div class="indent"><h3>5.2 <a name="entity-communities" id="entity-communities">Discover Communities</a></h3>
+	<p class="" style="">A community manager service MUST respond to service discovery information requests qualified by the 'http://jabber.org/protocol/disco#items' namespace. The "disco#items" result returned by a community manager service MUST indicate the communities managed by that service.</p>
+	<p class="caption"><a name="example-3" id="example-3"></a>Example 3. Entity queries community manager service regarding managed communities</p><div class="indent"><pre class="prettyprint">
+&lt;iq type='get'
+    from='juliet@capulet.com/balcony'
+    to='commutitizer.capulet.com'
+    id='query1'&gt;
+  &lt;query xmlns='http://jabber.org/protocol/disco#items'/&gt;
+&lt;/iq&gt;
+	</pre></div>
+	<p class="caption"><a name="example-4" id="example-4"></a>Example 4. Community manager service returns the set of managed communities</p><div class="indent"><pre class="prettyprint">
+&lt;iq type='get'
+    from='commutitizer.capulet.com'
+    to='juliet@capulet.com/balcony'
+    id='query2'&gt;
+  &lt;query xmlns='http://jabber.org/protocol/disco#items'&gt;
+    &lt;item jid='family.capulet.com'/&gt;
+    &lt;item jid='elders.capulet.com'/&gt;
+  &lt;/query&gt;
+&lt;/iq&gt;
+	</pre></div>
+	</div>
+	<div class="indent"><h3>5.3 <a name="entity-metadata" id="entity-metadata">Discover Community Metadata</a></h3>
+	<p class="" style="">A community service MUST respond to service discovery information requests qualified by the 'http://jabber.org/protocol/disco#info' namespace. The "disco#info" result returned by a community service MUST indicate the identity of the service and indicate which features are supported.</p>
+	<p class="caption"><a name="example-5" id="example-5"></a>Example 5. Entity queries community service regarding community meadata</p><div class="indent"><pre class="prettyprint">
+&lt;iq type='get'
+    from='juliet@capulet.com/balcony'
+    to='family.capulet.com'
+    id='query1'&gt;
+  &lt;query xmlns='http://jabber.org/protocol/disco#info'/&gt;
+&lt;/iq&gt;
+	</pre></div>
+	<p class="caption"><a name="example-6" id="example-6"></a>Example 6. Community service returns the set of supported features</p><div class="indent"><pre class="prettyprint">
+&lt;iq type='get'
+    from='family.capulet.com'
+    to='juliet@capulet.com/balcony'
+    id='query2'&gt;
+  &lt;query xmlns='http://jabber.org/protocol/disco#info'&gt;
+    &lt;identity category='community' type='service'/&gt;
+    &lt;feature var='http://socialblend.org/community'/&gt;
+    &lt;feature var='http://jabber.org/protocol/pubsub'/&gt;
+  &lt;/query&gt;
+&lt;/iq&gt;
+	</pre></div>
+	</div>
+<h2>6.
+       <a name="participant" id="participant">Participant Use Cases</a></h2>
+  <p class="" style="">This section defines the use cases for and protocols to be used by potential and actual participants of a community.</p>
+  	<div class="indent"><h3>6.1 <a name="participant-join" id="participant-join">Join a Community</a></h3>
+	<p class="" style="">An entity attempts to join a community.</p>
+		<div class="indent"><h3>6.1.1 <a name="participant-join-request" id="participant-join-request">Request</a></h3>
+		<p class="" style="">To join a community, the entity sends a join request that community.</p>
+		<p class="caption"><a name="example-7" id="example-7"></a>Example 7. Entity joins community</p><div class="indent"><pre class="prettyprint">
+&lt;iq type='set'
+    from='juliet@capulet.com/balcony'
+    to='family.capulet.com'
+    id='join1'&gt;
+  &lt;community xmlns='http://socialblend.org/community'&gt;
+    &lt;join/&gt;
+  &lt;/community&gt;
+&lt;/iq&gt;
+		</pre></div>
+		</div>
+		<div class="indent"><h3>6.1.2 <a name="participant-join-success" id="participant-join-success">Success Case</a></h3>
+		<p class="" style="">The community service responds to the entity saying that it now belongs to the community.</p>
+		<p class="caption"><a name="example-8" id="example-8"></a>Example 8. Community replies with success</p><div class="indent"><pre class="prettyprint">
+&lt;iq type='result'
+    from='family.capulet.com'
+    to='juliet@capulet.com/balcony'
+    id='join2'&gt;
+  &lt;community xmlns='http://socialblend.org/community'&gt;
+    &lt;join/&gt;
+  &lt;/community&gt;
+&lt;/iq&gt;
+		</pre></div>
+		</div>
+		<div class="indent"><h3>6.1.3 <a name="participant-join-error" id="participant-join-error">Error Cases</a></h3>
+		<p class="" style="">There are several reasons why the join request might fail:</p>
+		<ul class="" style="">
+			<li class="" style="">the requesting entity does not have permissions to join the community, based on the community configuration</li>
+			<li class="" style="">TODO</li>
+		</ul>
+		</div>
+		<div class="indent"><h3>6.1.4 <a name="participant-join-approval" id="participant-join-approval">Approval Required</a></h3>
+		<p class="" style="">For communities with an access model of "authorize", join requests MUST be approved by one of the community leaders; therefore the community service sends a message to the leader(s) requesting authorization (see the Manage Participation Requests section of this document). Because the subscription request may or may not be approved, the community MUST return a pending notification to the participant. TODO</p>
+		</div>
+		<div class="indent"><h3>6.1.5 <a name="participant-join-configuration" id="participant-join-configuration">Configuration Required</a></h3>
+		<p class="" style="">If the entity must configure its participation options (see the Configure Participation Options section of this document) before joining the community, the community MUST so inform the entity. It SHOULD do so by returning an IQ-result to the requesting entity with a notation that configuration of participation options is required. TODO</p>
+		</div>
+	</div>
+	<div class="indent"><h3>6.2 <a name="participant-leave" id="participant-leave">Leave a Community</a></h3>
+	<p class="" style="">An entity attempts to leave a community.</p>
+		<div class="indent"><h3>6.2.1 <a name="participant-leave-request" id="participant-leave-request">Request</a></h3>
+		<p class="" style="">To leave a community the entity must send the following request.</p>
+		<p class="caption"><a name="example-9" id="example-9"></a>Example 9. Entity leaves community</p><div class="indent"><pre class="prettyprint">
+&lt;iq type='set'
+    from='juliet@capulet.com/balcony'
+    to='family.capulet.com'
+    id='leave1'&gt;
+  &lt;community xmlns='http://socialblend.org/community'&gt;
+    &lt;leave/&gt;
+  &lt;/community&gt;
+&lt;/iq&gt;
+		</pre></div>
+		</div>
+		<div class="indent"><h3>6.2.2 <a name="participant-leave-success" id="participant-leave-success">Success Case</a></h3>
+		<p class="" style="">If the leave request is successfully processed, the server MUST inform the requesting entity that it is no longer in the community. For correctly processing the leave request, the community must:</p>
+		<ul class="" style="">
+			<li class="" style="">unsubscribe to whatever Publish-Subscribe nodes belonging to that user that it had subscribed;</li>
+			<li class="" style="">unsubscribe the user from all the community Publish-Subscribe nodes the user had subscribed to.</li>
+		</ul>
+		<p class="caption"><a name="example-10" id="example-10"></a>Example 10. Community replies with success</p><div class="indent"><pre class="prettyprint">
+&lt;iq type='result'
+    from='family.capulet.com'
+    to='juliet@capulet.com/balcony'
+    id='leave2'&gt;
+  &lt;community xmlns='http://socialblend.org/community'&gt;
+    &lt;leave/&gt;
+  &lt;/community&gt;
+&lt;/iq&gt;
+		</pre></div>
+		</div>
+		<div class="indent"><h3>6.2.3 <a name="participant-leave-error" id="participant-leave-error">Error Cases</a></h3>
+		<p class="" style="">There are several reasons why the leave request might fail: TODO</p>
+		</div>
+		<div class="indent"><h3>6.2.4 <a name="participant-leave-notification" id="participant-leave-notification">Leave Notification</a></h3>
+		<p class="" style="">Users may be forced to leave a community for a number of reasons. In case that happens, they shall receive a leave notification. TODO relation with acceptance??</p>
+		<p class="caption"><a name="example-11" id="example-11"></a>Example 11. Community notifies an entity that it is no longer part of the community.</p><div class="indent"><pre class="prettyprint">
+&lt;message from='family.capulet.com'
+    to='romeo@montague.net/garden'
+    id='leave1'&gt;
+  &lt;body&gt;You are not worthy of being a part of this family!&lt;/body&gt;
+  &lt;community xmlns='http://socialblend.org/community'&gt;
+    &lt;leave/&gt;
+  &lt;/community&gt;
+&lt;/message&gt;
+		</pre></div>
+		</div>
+	</div>
+	<div class="indent"><h3>6.3 <a name="participant-invite" id="participant-invite">Invite Participant to a Community</a></h3>
+	<p class="" style="">An entity may choose to invite another entity to join a community.</p>
+	<p class="caption"><a name="example-12" id="example-12"></a>Example 12. Entity invites another entity to join a community</p><div class="indent"><pre class="prettyprint">
+&lt;message from='juliet@capulet.com/balcony'
+    to='romeo@montague.net/garden'
+    id='invite1'&gt;
+  &lt;body&gt;Marry me, Romeo!&lt;/body&gt;
+  &lt;community xmlns='http://socialblend.org/community'&gt;
+    &lt;invite jid='family.capulet.com'/&gt;
+  &lt;/community&gt;
+&lt;/message&gt;
+	</pre></div>
+	</div>
+	<div class="indent"><h3>6.4 <a name="participant-configure" id="participant-configure">Configure Participation Options</a></h3>
+	<p class="" style="">A community MAY allow participants to configure their options. Implementations SHOULD use the Data Forms protocol to accomplish this configuration. The options SHOULD the mapping between his personal Publish-Subscribe nodes and the ones from the community.</p>
+		<div class="indent"><h3>6.4.1 <a name="participant-configure-advertise" id="participant-configure-advertise">Advertising Support</a></h3>
+		<p class="" style="">If a community supports participation option configuration it MUST advertise that fact in its response to a "disco#info" query by including a feature whose 'var' attribute is "community#participation-options".</p>
+		</div>
+		<div class="indent"><h3>6.4.2 <a name="participant-configure-request" id="participant-configure-request">Request</a></h3>
+		<p class="" style="">TODO</p>
+		</div>
+		<div class="indent"><h3>6.4.3 <a name="participant-configure-success" id="participant-configure-success">Success Case</a></h3>
+		<p class="" style="">TODO</p>
+		</div>
+		<div class="indent"><h3>6.4.4 <a name="participant-configure-error" id="participant-configure-error">Error Cases</a></h3>
+		<p class="" style="">TODO</p>
+		</div>
+		<div class="indent"><h3>6.4.5 <a name="participant-configure-submission" id="participant-configure-submission">Form Submission</a></h3>
+		<p class="" style="">TODO</p>
+		</div>
+		<div class="indent"><h3>6.4.6 <a name="participant-configure-processing" id="participant-configure-processing">Form Processing</a></h3>
+		<p class="" style="">TODO</p>
+		</div>
+		<div class="indent"><h3>6.4.7 <a name="participant-join-configure" id="participant-join-configure">Join and Configure</a></h3>
+		<p class="" style="">TODO</p>
+		</div>
+	</div>
+	<div class="indent"><h3>6.5 <a name="participation-default" id="participation-default">Request Default Participation Configuration Options</a></h3>
+	<p class="" style="">An entity might want to request information about the default participation configuration. Support for this feature is OPTIONAL.</p>
+		<div class="indent"><h3>6.5.1 <a name="participation-default-request" id="participation-default-request">Request</a></h3>
+		<p class="" style="">TODO</p>
+		</div>
+		<div class="indent"><h3>6.5.2 <a name="participation-default-success" id="participation-default-success">Success Case</a></h3>
+		<p class="" style="">TODO</p>
+		</div>
+		<div class="indent"><h3>6.5.3 <a name="participation-default-error" id="participation-default-error">Error Cases</a></h3>
+		<p class="" style="">TODO</p>
+		</div>
+	</div>
+	<div class="indent"><h3>6.6 <a name="participant-retrieve" id="participant-retrieve">Retrieve Community Publish-Subscribe Node Structure</a></h3>
+	<p class="" style="">An entity may need to request information about the community nodes and the information being published there.</p>
+	<p class="" style="">To discover the available Publish-Subscribe nodes and their metadata in a community the entity MUST do as described in PUBSUB TODO</p>
+	<p class="" style="">The depending on the community configuration, the community MUST return TODO ERROR MESSAGE if the entity resquesting the nodes does not have a specific role in that community.</p>
+	</div>
+	<div class="indent"><h3>6.7 <a name="participant-list" id="participant-list">Retrieve Community Participant List</a></h3>
+	<p class="" style="">An entity may need to request information about the other community participants.</p>
+		<div class="indent"><h3>6.7.1 <a name="participant-list-request" id="participant-list-request">Request</a></h3>
+		<p class="" style="">To get a community participant list the entity must send the following request.</p>
+		<p class="caption"><a name="example-13" id="example-13"></a>Example 13. Entity gets participant list</p><div class="indent"><pre class="prettyprint">
+&lt;iq type='get'
+    from='juliet@capulet.com/balcony'
+    to='family.capulet.com'
+    id='leave1'&gt;
+  &lt;community xmlns='http://socialblend.org/community'&gt;
+    &lt;who/&gt;
+  &lt;/community&gt;
+&lt;/iq&gt;
+		</pre></div>
+		</div>
+		<div class="indent"><h3>6.7.2 <a name="participant-list-success" id="participant-list-success">Success Case</a></h3>
+		<p class="" style="">The community service responds to the entity with the community participant list.</p>
+		<p class="caption"><a name="example-14" id="example-14"></a>Example 14. Community returns partcipant list</p><div class="indent"><pre class="prettyprint">
+&lt;iq type='result'
+    from='juliet@capulet.com/balcony'
+    to='family.capulet.com'
+    id='leave1'&gt;
+  &lt;community xmlns='http://socialblend.org/community'&gt;
+    &lt;who&gt;
+    	&lt;participant jid='juliet@capulet.com' role='leader' /&gt;
+    	&lt;participant jid='romeo@montague.net' role='participant' /&gt;
+    &lt;/who&gt;
+  &lt;/community&gt;
+&lt;/iq&gt;
+		</pre></div>
+		</div>
+		<div class="indent"><h3>6.7.3 <a name="participant-list-error" id="participant-list-error">Error Cases</a></h3>
+		<p class="" style="">There are several reasons why the join request might fail:</p>
+		<ul class="" style="">
+			<li class="" style="">the requesting entity does not have permissions to see the participant list, based on it's role on the community and on the community configuration</li>
+			<li class="" style="">TODO</li>
+		</ul>
+		</div>
+	</div>
+ <h2>7.
+       <a name="leader" id="leader">Leader Use Cases</a></h2>
+  <p class="" style="">This section defines the use cases for and protocols to be used by potential and actual leaders of a community.</p>
+  	<div class="indent"><h3>7.1 <a name="leader-create" id="leader-create">Create Community</a></h3>
+	<p class="" style="">An entity may want to create a new community. For that it should send a request to an existing community manager. Community manager service support for this feature ("create-community") is MANDATORY.</p>
+		<div class="indent"><h3>7.1.1 <a name="leader-create-request" id="leader-create-request">Request</a></h3>
+		<p class="" style="">To create a community, the entity sends a create request a community manager service.</p>
+		<p class="caption"><a name="example-15" id="example-15"></a>Example 15. Entity creates community</p><div class="indent"><pre class="prettyprint">
+&lt;iq type='set'
+    from='juliet@capulet.com/balcony'
+    to='commutitizer.capulet.com'
+    id='create1'&gt;
+  &lt;community xmlns='http://socialblend.org/manager'&gt;
+    &lt;create/&gt;
+  &lt;/community&gt;
+&lt;/iq&gt;
+		</pre></div>
+		</div>
+		<div class="indent"><h3>7.1.2 <a name="leader-create-success" id="leader-create-success">Success Case</a></h3>
+		<p class="" style="">TODO</p>
+		</div>
+		<div class="indent"><h3>7.1.3 <a name="leader-create-error" id="leader-create-error">Error Cases</a></h3>
+		<p class="" style="">There are several reasons why the create request might fail:</p>
+		<ul class="" style="">
+			<li class="" style="">the community manager service does not accept create requests from that entity</li>
+			<li class="" style="">TODO</li>
+		</ul>
+		</div>
+		<div class="indent"><h3>7.1.4 <a name="leader-create-configuration" id="leader-create-configuration">Configuration Required</a></h3>
+		<p class="" style="">If the entity must configure its participation options (see the Configure Community Options section of this document) before joining the community, the community MUST so inform the entity. It SHOULD do so by returning an IQ-result to the requesting entity with a notation that configuration of participation options is required. TODO</p>
+		</div>
+	</div>
+	<div class="indent"><h3>7.2 <a name="leader-configure" id="leader-configure">Configure Community Options</a></h3>
+	<p class="" style="">A community SHOULD allow leaders to configure the community options. Implementations SHOULD use the Data Forms protocol to accomplish this configuration.</p>
+		<div class="indent"><h3>7.2.1 <a name="leader-configure-advertise" id="leader-configure-advertise">Advertising Support</a></h3>
+		<p class="" style="">If a community supports options configurations it MUST advertise that fact in its response to a "disco#info" query by including a feature whose 'var' attribute is "community#community-options".</p>
+		</div>
+		<div class="indent"><h3>7.2.2 <a name="leader-configure-request" id="leader-configure-request">Request</a></h3>
+		<p class="" style="">TODO</p>
+		</div>
+		<div class="indent"><h3>7.2.3 <a name="leader-configure-success" id="leader-configure-success">Success Case</a></h3>
+		<p class="" style="">TODO</p>
+		</div>
+		<div class="indent"><h3>7.2.4 <a name="leader-configure-error" id="leader-configure-error">Error Cases</a></h3>
+		<p class="" style="">TODO</p>
+		</div>
+		<div class="indent"><h3>7.2.5 <a name="leader-configure-submission" id="leader-configure-submission">Form Submission</a></h3>
+		<p class="" style="">TODO</p>
+		</div>
+		<div class="indent"><h3>7.2.6 <a name="leader-configure-processing" id="leader-configure-processing">Form Processing</a></h3>
+		<p class="" style="">TODO</p>
+		</div>
+		<div class="indent"><h3>7.2.7 <a name="leader-create-configure" id="leader-create-configure">Create and Configure</a></h3>
+		<p class="" style="">TODO</p>
+		</div>
+	</div>
+	<div class="indent"><h3>7.3 <a name="community-default" id="community-default">Request Default Community Configuration Options</a></h3>
+	<p class="" style="">An entity might want to request information about the default community configuration to a community manager. Support for this feature is OPTIONAL.</p>
+		<div class="indent"><h3>7.3.1 <a name="community-default-request" id="community-default-request">Request</a></h3>
+		<p class="" style="">TODO</p>
+		</div>
+		<div class="indent"><h3>7.3.2 <a name="community-default-success" id="community-default-success">Success Case</a></h3>
+		<p class="" style="">TODO</p>
+		</div>
+		<div class="indent"><h3>7.3.3 <a name="community-default-error" id="community-default-error">Error Cases</a></h3>
+		<p class="" style="">TODO</p>
+			<div class="indent"><h3>7.3.3.1 <a name="community-default-error-community" id="community-default-error-community">Community Configuration Not Supported</a></h3>
+			<p class="" style="">TODO</p>
+			</div>
+			<div class="indent"><h3>7.3.3.2 <a name="community-default-error-default" id="community-default-error-default">Default Community Configuration Retrieval Not Supported</a></h3>
+			<p class="" style="">TODO</p>
+			</div>
+		</div>
+	</div>
+	<div class="indent"><h3>7.4 <a name="leader-delete" id="leader-delete">Delete a Community</a></h3>
+	<p class="" style="">If a community manager service supports community creation, it MUST support community deletion. When a community is deleted all associated Publish-Subscribe nodes MUST also be deleted, as specified in TODO.</p>
+		<div class="indent"><h3>7.4.1 <a name="leader-delete-request" id="leader-delete-request">Request</a></h3>
+		<p class="" style="">To delete a community, the entity sends a delete request the community manager service that created that community.</p>
+		<p class="caption"><a name="example-16" id="example-16"></a>Example 16. Entity deletes a community</p><div class="indent"><pre class="prettyprint">
+&lt;iq type='set'
+    from='juliet@capulet.com/balcony'
+    to='commutitizer.capulet.com'
+    id='delete1'&gt;
+  &lt;community xmlns='http://socialblend.org/manager'&gt;
+    &lt;delete jid='family.capulet.com'/&gt;
+  &lt;/community&gt;
+&lt;/iq&gt;
+		</pre></div>
+		</div>
+		<div class="indent"><h3>7.4.2 <a name="leader-delete-success" id="leader-delete-success">Success Case</a></h3>
+		<p class="" style="">If the delete request is successfully processed, the community manager service MUST inform the requesting entity that the community no longer exists. For correctly processing the delete request, the community manager service must:</p>
+		<ul class="" style="">
+			<li class="" style="">perform the process and deliver a leave notification (TODO) to all elements of that community;</li>
+			<li class="" style="">release the community jid.</li>
+		</ul>
+		<p class="caption"><a name="example-17" id="example-17"></a>Example 17. Entity creates community</p><div class="indent"><pre class="prettyprint">
+&lt;iq type='result'
+    from='commutitizer.capulet.com'
+    to='juliet@capulet.com/balcony'
+    id='delete2'&gt;
+  &lt;community xmlns='http://socialblend.org/manager'&gt;
+    &lt;delete jid='family.capulet.com'/&gt;
+  &lt;/community&gt;
+&lt;/iq&gt;
+		</pre></div>
+		</div>
+		<div class="indent"><h3>7.4.3 <a name="leader-delete-error" id="leader-delete-error">Error Cases</a></h3>
+		<p class="" style="">There are several reasons why the create request might fail:</p>
+		<ul class="" style="">
+			<li class="" style="">the requesting entity does not have permissions to delete that community</li>
+			<li class="" style="">TODO</li>
+		</ul>
+			<div class="indent"><h3>7.4.3.1 <a name="leader-delete-error-privileges" id="leader-delete-error-privileges">Insufficient Privileges</a></h3>
+			<p class="" style="">TODO</p>
+			</div>
+		</div>
+	</div>
+	<div class="indent"><h3>7.5 <a name="leader-partreq" id="leader-partreq">Manage Participation Requests</a></h3>
+	<p class="" style="">TODO</p>
+	</div>
+	<div class="indent"><h3>7.6 <a name="leader-pending" id="leader-pending">Process Pending Participation Requests</a></h3>
+	<p class="" style="">TODO</p>
+		<div class="indent"><h3>7.6.1 <a name="leader-pending-request" id="leader-pending-request">Request</a></h3>
+		<p class="" style="">TODO</p>
+		</div>
+		<div class="indent"><h3>7.6.2 <a name="leader-pending-success" id="leader-pending-success">Success Case</a></h3>
+		<p class="" style="">TODO</p>
+		</div>
+		<div class="indent"><h3>7.6.3 <a name="leader-pending-error" id="leader-pending-error">Error Cases</a></h3>
+		<p class="" style="">TODO</p>
+			<div class="indent"><h3>7.6.3.1 <a name="leader-pending-error-privileges" id="leader-pending-error-privileges">Insufficient Privileges</a></h3>
+			<p class="" style="">TODO</p>
+			</div>
+		</div>
+	</div>
+	<div class="indent"><h3>7.7 <a name="leader-manage" id="leader-manage">Manage Group Participants</a></h3>
+	<p class="" style="">TODO</p>
+		<div class="indent"><h3>7.7.1 <a name="leader-manage-retrieve" id="leader-manage-retrieve">Retrieve Participant List</a></h3>
+		<p class="" style="">TODO</p>
+			<div class="indent"><h3>7.7.1.1 <a name="community-manage-retrieve-request" id="community-manage-retrieve-request">Request</a></h3>
+			<p class="" style="">TODO</p>
+			</div>
+			<div class="indent"><h3>7.7.1.2 <a name="community-manage-retrieve-success" id="community-manage-retrieve-success">Success Case</a></h3>
+			<p class="" style="">TODO</p>
+			</div>
+			<div class="indent"><h3>7.7.1.3 <a name="community-manage-retrieve-error" id="community-manage-retrieve-error">Error Cases</a></h3>
+			<p class="" style="">TODO</p>
+			</div>
+		</div>
+		<div class="indent"><h3>7.7.2 <a name="community-manage-modify" id="community-manage-modify">Modify a Participant Role</a></h3>
+		<p class="" style="">TODO</p>
+			<div class="indent"><h3>7.7.2.1 <a name="community-manage-modify-request" id="community-manage-modify-request">Request</a></h3>
+			<p class="" style="">TODO</p>
+			</div>
+			<div class="indent"><h3>7.7.2.2 <a name="community-manage-modify-success" id="community-manage-modify-success">Success Case</a></h3>
+			<p class="" style="">TODO</p>
+			</div>
+			<div class="indent"><h3>7.7.2.3 <a name="community-manage-modify-error" id="community-manage-modify-error">Error Cases</a></h3>
+			<p class="" style="">TODO</p>
+			</div>
+			<div class="indent"><h3>7.7.2.4 <a name="community-manage-modify-simultaneous" id="community-manage-modify-simultaneous">Multiple Simultaneous Modifications</a></h3>
+			<p class="" style="">TODO</p>
+			</div>
+		</div>
+		<div class="indent"><h3>7.7.3 <a name="community-manage-remove" id="community-manage-remove">Remove a Participant</a></h3>
+		<p class="" style="">TODO</p>
+			<div class="indent"><h3>7.7.3.1 <a name="community-manage-remove-request" id="community-manage-remove-request">Request</a></h3>
+			<p class="" style="">TODO</p>
+			</div>
+			<div class="indent"><h3>7.7.3.2 <a name="community-manage-remove-success" id="community-manage-remove-success">Success Case</a></h3>
+			<p class="" style="">TODO</p>
+			</div>
+			<div class="indent"><h3>7.7.3.3 <a name="community-manage-remove-error" id="community-manage-remove-error">Error Cases</a></h3>
+			<p class="" style="">TODO</p>
+			</div>
+		</div>
+		<div class="indent"><h3>7.7.4 <a name="community-manage-notify" id="community-manage-notify">Notifying Participants</a></h3>
+		<p class="" style="">TODO</p>
+			<div class="indent"><h3>7.7.4.1 <a name="community-manage-notify-request" id="community-manage-notify-request">Request</a></h3>
+			<p class="" style="">TODO</p>
+			</div>
+			<div class="indent"><h3>7.7.4.2 <a name="community-manage-notify-success" id="community-manage-notify-success">Success Case</a></h3>
+			<p class="" style="">TODO</p>
+			</div>
+			<div class="indent"><h3>7.7.4.3 <a name="community-manage-notify-error" id="community-manage-notify-error">Error Cases</a></h3>
+			<p class="" style="">TODO</p>
+			</div>
+		</div>
+	</div>
+<h2>8.
+       <a name="rules" id="rules">Business Rules</a></h2>
+  <p class="" style="">TODO</p>
+<h2>9.
+       <a name="impl" id="impl">Implementation Notes</a></h2>
+  <p class="" style="">TODO</p>
+<h2>10.
+       <a name="access" id="access">Accessibility Considerations</a></h2>
+  <p class="" style="">TODO</p>
+<h2>11.
+       <a name="i18n" id="i18n">Internationalization Considerations</a></h2>
+  <p class="" style="">TODO</p>
+<h2>12.
+       <a name="security" id="security">Security Considerations</a></h2>
+  <p class="" style="">TODO</p>
+<h2>13.
+       <a name="iana" id="iana">IANA Considerations</a></h2>
+  <p class="" style="">TODO</p>
+<h2>14.
+       <a name="registrar" id="registrar">XMPP Registrar Considerations</a></h2>
+  <p class="" style="">TODO</p>
+<h2>15.
+       <a name="schema" id="schema">XML Schema</a></h2>
+  <p class="" style="">TODO</p>
+<hr /><a name="appendices" id="appendices"></a><h2>Appendices</h2><hr /><a name="appendix-docinfo" id="appendix-docinfo"></a><h3>Appendix A: Document Information</h3><p class="indent">
+            Series: <a href="http://xmpp.org/extensions/">XEP</a><br />
+            Number: SOC1<br />
+            Publisher: <a href="/xsf/">XMPP Standards Foundation</a><br />
+            Status: 
+            <a href="http://xmpp.org/extensions/xep-0001.html#states-ProtoXEP">ProtoXEP</a><br />
+            Type:
+            <a href="http://xmpp.org/extensions/xep-0001.html#types-SOCIETIES Extension">SOCIETIES Extension</a><br />
+            Version: 0.0.1<br />
+            Last Updated: 2011-09-26<br />
+                Approving Body: <a href="http://xmpp.org/council/">XMPP Council</a><br />Dependencies: XMPP Core, XEP-0001, XEP-0004, XEP-0030, XEP-0054, XEP-0060, XEP-0077, XEP-0114, XEP-0144, XEP-0291<br />
+                Supersedes: None<br />
+                Superseded By: None<br />
+            Short Name: NOT_YET_ASSIGNED<br />
+            This document in other formats: 
+                <a class="standardsButton" href="http://xmpp.org/extensions/xep-SOC1.xml">XML</a> 
+                <a class="standardsButton" href="http://xmpp.org/extensions/xep-SOC1.pdf">PDF</a></p><hr /><a name="appendix-authorinfo" id="appendix-authorinfo"></a><h3>Appendix B: Author Information</h3><div class="indent"><h3>João M. Gonçalves</h3><p class="indent">
+        Email:
+        <a href="mailto:"></a><br />
+        JabberID: 
+        <a href="xmpp:"></a><br /></p></div><hr /><a name="appendix-legal" id="appendix-legal"></a><h3>Appendix C: Legal Notices</h3><div class="indent"><h4>Copyright</h4>This XMPP Extension Protocol is copyright (c) 1999 - 2010 by the XMPP Standards Foundation (XSF).<h4>Permissions</h4>Permission is hereby granted, free of charge, to any person obtaining a copy of this specification (the "Specification"), to make use of the Specification without restriction, including without limitation the rights to implement the Specification in a software program, deploy the Specification in a network service, and copy, modify, merge, publish, translate, distribute, sublicense, or sell copies of the Specification, and to permit persons to whom the Specification is furnished to do so, subject to the condition that the foregoing copyright notice and this permission notice shall be included in all copies or substantial portions of the Specification. Unless separate permission is granted, modified works that are redistributed shall not contain misleading information regarding the authors, title, number, or publisher of the Specification, and shall not claim endorsement of the modified works by the authors, any organization or project to which the authors belong, or the XMPP Standards Foundation.<h4>Disclaimer of Warranty</h4><span style="font-weight: bold">## NOTE WELL: This Specification is provided on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, express or implied, including, without limitation, any warranties or conditions of TITLE, NON-INFRINGEMENT, MERCHANTABILITY, or FITNESS FOR A PARTICULAR PURPOSE. In no event shall the XMPP Standards Foundation or the authors of this Specification be liable for any claim, damages, or other liability, whether in an action of contract, tort, or otherwise, arising from, out of, or in connection with the Specification or the implementation, deployment, or other use of the Specification. ##</span><h4>Limitation of Liability</h4>In no event and under no legal theory, whether in tort (including negligence), contract, or otherwise, unless required by applicable law (such as deliberate and grossly negligent acts) or agreed to in writing, shall the XMPP Standards Foundation or any author of this Specification be liable for damages, including any direct, indirect, special, incidental, or consequential damages of any character arising out of the use or inability to use the Specification (including but not limited to damages for loss of goodwill, work stoppage, computer failure or malfunction, or any and all other commercial damages or losses), even if the XMPP Standards Foundation or such author has been advised of the possibility of such damages.<h4>IPR Conformance</h4>This XMPP Extension Protocol has been contributed in full conformance with the XSF's Intellectual Property Rights Policy (a copy of which may be found at &lt;<a href="http://www.xmpp.org/extensions/ipr-policy.shtml">http://www.xmpp.org/extensions/ipr-policy.shtml</a>&gt; or obtained by writing to XSF, P.O. Box 1641, Denver, CO 80201 USA).</div><hr /><a name="appendix-xmpp" id="appendix-xmpp"></a><h3>Appendix D: Relation to XMPP</h3><p class="indent">The Extensible Messaging and Presence Protocol (XMPP) is defined in the XMPP Core (RFC 3920) and XMPP IM (RFC 3921) specifications contributed by the XMPP Standards Foundation to the Internet Standards Process, which is managed by the Internet Engineering Task Force in accordance with RFC 2026. Any protocol defined in this document has been developed outside the Internet Standards Process and is to be understood as an extension to XMPP rather than as an evolution, development, or modification of XMPP itself.</p><hr /><a name="appendix-discuss" id="appendix-discuss"></a><h3>Appendix E: Discussion Venue</h3><p class="indent">The primary venue for discussion of XMPP Extension Protocols is the &lt;<a href="http://mail.jabber.org/mailman/listinfo/standards">standards@xmpp.org</a>&gt; discussion list.</p><p class="indent">Discussion on other xmpp.org discussion lists might also be appropriate; see &lt;<a href="http://xmpp.org/about/discuss.shtml">http://xmpp.org/about/discuss.shtml</a>&gt; for a complete list.</p><p class="indent">Errata can be sent to &lt;<a href="mailto:editor@xmpp.org">editor@xmpp.org</a>&gt;.</p><hr /><a name="appendix-conformance" id="appendix-conformance"></a><h3>Appendix F: Requirements Conformance</h3><p class="indent">The following requirements keywords as used in this document are to be interpreted as described in <a href="http://www.ietf.org/rfc/rfc2119.txt">RFC 2119</a>: "MUST", "SHALL", "REQUIRED"; "MUST NOT", "SHALL NOT"; "SHOULD", "RECOMMENDED"; "SHOULD NOT", "NOT RECOMMENDED"; "MAY", "OPTIONAL".</p><hr /><a name="appendix-notes" id="appendix-notes"></a><h3>Appendix G: Notes</h3><div class="indent"></div><hr /><a name="appendix-revs" id="appendix-revs"></a><h3>Appendix H: Revision History</h3><p>Note: Older versions of this specification might be available at <a href="http://xmpp.org/extensions/attic/">http://xmpp.org/extensions/attic/</a></p><div class="indent"><h4>Version 0.0.1 (2011-09-26)</h4><div class="indent"><p class="" style="">First draft.</p> (jmg)
+    </div></div><hr /><p>END</p></body></html>
