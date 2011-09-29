@@ -341,7 +341,7 @@
     to='commutitizer.capulet.com'
     id='create1'>
   <community xmlns='http://socialblend.org/manager'>
-    <create/>
+    <create jid='family.capulet.com'/>
   </community>
 </iq>
 		]]></example>
