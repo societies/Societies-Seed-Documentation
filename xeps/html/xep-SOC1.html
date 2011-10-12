@@ -84,7 +84,12 @@
       7.7.4.  <a href="#community-manage-notify">Notifying Participants</a><br />        
       7.7.4.1.  <a href="#community-manage-notify-request">Request</a><br />        
       7.7.4.2.  <a href="#community-manage-notify-success">Success Case</a><br />        
-      7.7.4.3.  <a href="#community-manage-notify-error">Error Cases</a><br />8.  <a href="#rules">Business Rules</a><br />9.  <a href="#impl">Implementation Notes</a><br />10.  <a href="#access">Accessibility Considerations</a><br />11.  <a href="#i18n">Internationalization Considerations</a><br />12.  <a href="#security">Security Considerations</a><br />13.  <a href="#iana">IANA Considerations</a><br />14.  <a href="#registrar">XMPP Registrar Considerations</a><br />15.  <a href="#schema">XML Schema</a></p><p><a href="#appendices">Appendices</a><br />    <a href="#appendix-docinfo">A: Document Information</a><br />    <a href="#appendix-authorinfo">B: Author Information</a><br />    <a href="#appendix-legal">C: Legal Notices</a><br />    <a href="#appendix-xmpp">D: Relation to XMPP</a><br />    <a href="#appendix-discuss">E: Discussion Venue</a><br />    <a href="#appendix-conformance">F: Requirements Conformance</a><br />    <a href="#appendix-notes">G: Notes</a><br />    <a href="#appendix-revs">H: Revision History</a></p></div><hr /><h2>1.
+      7.7.4.3.  <a href="#community-manage-notify-error">Error Cases</a><br />8.  <a href="#rules">Business Rules</a><br />9.  <a href="#impl">Implementation Notes</a><br />10.  <a href="#access">Accessibility Considerations</a><br />11.  <a href="#i18n">Internationalization Considerations</a><br />12.  <a href="#security">Security Considerations</a><br />13.  <a href="#iana">IANA Considerations</a><br />14.  <a href="#registrar">XMPP Registrar Considerations</a><br />15.  <a href="#schema">XML Schema</a><br />   
+      15.1.  <a href="#schemas-community">http://socialblend.org/community</a><br />   
+      15.2.  <a href="#schemas-leader">http://socialblend.org/community#leader</a><br />   
+      15.3.  <a href="#schemas-error">http://socialblend.org/community#error</a><br />   
+      15.4.  <a href="#schemas-manager">http://socialblend.org/manager</a><br />   
+      15.5.  <a href="#schemas-manerror">http://socialblend.org/manager#error</a></p><p><a href="#appendices">Appendices</a><br />    <a href="#appendix-docinfo">A: Document Information</a><br />    <a href="#appendix-authorinfo">B: Author Information</a><br />    <a href="#appendix-legal">C: Legal Notices</a><br />    <a href="#appendix-xmpp">D: Relation to XMPP</a><br />    <a href="#appendix-discuss">E: Discussion Venue</a><br />    <a href="#appendix-conformance">F: Requirements Conformance</a><br />    <a href="#appendix-notes">G: Notes</a><br />    <a href="#appendix-revs">H: Revision History</a></p></div><hr /><h2>1.
        <a name="intro" id="intro">Introduction</a></h2>
   <p class="" style="">This section describes the community manager and the community components. TODO</p>
 <h2>2.
@@ -345,8 +350,8 @@
 		<p class="" style="">The community service responds to the entity with the community participant list.</p>
 		<p class="caption"><a name="example-14" id="example-14"></a>Example 14. Community returns partcipant list</p><div class="indent"><pre class="prettyprint">
 &lt;iq type='result'
-    from='juliet@capulet.com/balcony'
-    to='family.capulet.com'
+    from='family.capulet.com'
+    to='juliet@capulet.com/balcony'
     id='leave1'&gt;
   &lt;community xmlns='http://socialblend.org/community'&gt;
     &lt;who&gt;
@@ -577,7 +582,78 @@
   <p class="" style="">TODO</p>
 <h2>15.
        <a name="schema" id="schema">XML Schema</a></h2>
-  <p class="" style="">TODO</p>
+  <div class="indent"><h3>15.1 <a name="schemas-community" id="schemas-community">http://socialblend.org/community</a></h3>
+    <p class="caption"></p><div class="indent"><pre class="prettyprint">
+&lt;?xml version='1.0' encoding='UTF-8'?&gt;
+&lt;xs:schema xmlns:xs='http://www.w3.org/2001/XMLSchema'
+	targetNamespace='http://socialblend.org/community'
+	xmlns='http://socialblend.org/community'
+	elementFormDefault='qualified'&gt;
+
+	&lt;xs:annotation&gt;
+		&lt;xs:documentation&gt;
+			The protocol documented by this schema is defined in XEP-SOC1.
+		&lt;/xs:documentation&gt;
+	&lt;/xs:annotation&gt;
+
+	&lt;xs:element name='community'&gt;
+		&lt;xs:complexType&gt;
+			&lt;xs:choice minOccurs='0' maxOccurs='1'&gt;
+				&lt;xs:element ref='join'/&gt;
+				&lt;xs:element ref='leave'/&gt;
+				&lt;xs:element ref='invite'/&gt;
+				&lt;xs:element ref='who'/&gt;
+			&lt;/xs:choice&gt;
+		&lt;/xs:complexType&gt;
+	&lt;/xs:element&gt;
+	
+	&lt;xs:element name='join' type='empty' /&gt;
+	&lt;xs:element name='leave' type='empty' /&gt;
+	&lt;xs:element name='invite'&gt;
+		&lt;xs:complexType&gt;
+			&lt;xs:simpleContent&gt;
+				&lt;xs:extension base='empty'&gt;
+					&lt;xs:attribute name='jid' type='xs:string' use='required'/&gt;
+				&lt;/xs:extension&gt;
+			&lt;/xs:simpleContent&gt;
+		&lt;/xs:complexType&gt;
+	&lt;/xs:element&gt;
+	&lt;xs:element name='who'&gt;
+		&lt;xs:complexType&gt;
+			&lt;xs:sequence minOccurs='0' maxOccurs='unbounded'&gt;
+				&lt;xs:element ref='participant'/&gt;
+			&lt;/xs:sequence&gt;
+		&lt;/xs:complexType&gt;
+	&lt;/xs:element&gt;
+	&lt;xs:element name='participant'&gt;
+		&lt;xs:complexType&gt;
+			&lt;xs:simpleContent&gt;
+				&lt;xs:extension base='empty'&gt;
+					&lt;xs:attribute name='jid' type='xs:string' use='required'/&gt;
+					&lt;xs:attribute name='role' type='xs:string' use='optional'/&gt;
+				&lt;/xs:extension&gt;
+			&lt;/xs:simpleContent&gt;
+		&lt;/xs:complexType&gt;
+	&lt;/xs:element&gt;
+
+	&lt;xs:simpleType name='empty'&gt;
+		&lt;xs:restriction base='xs:string'&gt;
+			&lt;xs:enumeration value=''/&gt;
+		&lt;/xs:restriction&gt;
+	&lt;/xs:simpleType&gt;
+
+&lt;/xs:schema&gt;
+    
+    </pre></div>
+    </div>
+    <div class="indent"><h3>15.2 <a name="schemas-leader" id="schemas-leader">http://socialblend.org/community#leader</a></h3>
+    </div>
+    <div class="indent"><h3>15.3 <a name="schemas-error" id="schemas-error">http://socialblend.org/community#error</a></h3>
+    </div>
+    <div class="indent"><h3>15.4 <a name="schemas-manager" id="schemas-manager">http://socialblend.org/manager</a></h3>
+    </div>
+    <div class="indent"><h3>15.5 <a name="schemas-manerror" id="schemas-manerror">http://socialblend.org/manager#error</a></h3>
+    </div>
 <hr /><a name="appendices" id="appendices"></a><h2>Appendices</h2><hr /><a name="appendix-docinfo" id="appendix-docinfo"></a><h3>Appendix A: Document Information</h3><p class="indent">
             Series: <a href="http://xmpp.org/extensions/">XEP</a><br />
             Number: SOC1<br />
